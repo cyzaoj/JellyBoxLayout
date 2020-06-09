@@ -1,0 +1,122 @@
+//plugins {
+//    id "com.jfrog.bintray" version "1.8.4"
+//}
+
+apply plugin: "maven-publish"
+apply plugin: 'org.jetbrains.dokka'
+
+final String DESCRIPTION = "An Android JellyBoxLayout Library"
+final String GITHUB_URL = "https://github.com/cyzaoj/JellyBoxLayout"
+
+
+final String GROUP_ID = "com.aboust.jelly"
+final String ARTIFACT_ID = "jellyboxlayout"
+
+def VERSION_CODE = 1
+def VERSION_NAME = '1.0.0'
+
+
+//BinTray configuration - credentials stored in user's gradle.properties
+bintray {
+    user = getBinTrayUser()
+    key = getBinTrayKey()
+    publications = ['JellyBoxLayout']
+
+    pkg {
+        repo = 'android'
+        name = ARTIFACT_ID
+        userOrg = 'aboust'
+        desc = DESCRIPTION
+        vcsUrl = GITHUB_URL + '.git'
+        websiteUrl = GITHUB_URL
+        issueTrackerUrl = GITHUB_URL + '/issues'
+        licenses = ['MIT']
+        publish = true
+
+        version {
+            name = VERSION_NAME // Version name i.e. "1.0"
+            desc = DESCRIPTION
+            vcsTag = VERSION_NAME
+            released = new Date()
+        }
+    }
+}
+
+// Create the POM configuration - required for jCenter uploading
+def pomConfig = {
+    licenses {
+        license {
+            name "MIT License"
+            url "https://opensource.org/licenses/MIT"
+            distribution "repo"
+        }
+    }
+}
+
+
+dokka {
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
+}
+
+bintrayUpload.dependsOn 'generatePomFileForJellyBoxLayoutPublication'
+bintrayUpload.dependsOn 'dokka'
+
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from "$buildDir/javadoc"
+}
+
+// Create the publication with the pom configuration:
+publishing {
+    publications {
+        JellyBoxLayout(MavenPublication) {
+            groupId GROUP_ID
+            artifactId ARTIFACT_ID
+            version VERSION_NAME
+
+            //from components.android
+            artifact sourcesJar
+            artifact javadocJar
+
+            // Tell maven to prepare the generated "*.aar" file for publishing
+            artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', DESCRIPTION)
+                root.appendNode('name', ARTIFACT_ID)
+                root.appendNode('url', GITHUB_URL)
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+
+configurations {
+    javadocDeps
+}
+
+
+task showBintrayProps {
+    doLast {
+        println "Bintray user/password: ${getBinTrayUser()}/${getBinTrayKey()}"
+    }
+}
+
+def final getBinTrayUser() {
+    final String BINTRAY_USER = "BINTRAY_USER"
+    return project.hasProperty(BINTRAY_USER) ? project.getProperty(BINTRAY_USER) : null
+}
+
+def final getBinTrayKey() {
+    final String BINTRAY_KEY = "BINTRAY_KEY"
+    return project.hasProperty(BINTRAY_KEY) ? project.getProperty(BINTRAY_KEY) : null
+}
+

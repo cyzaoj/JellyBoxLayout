@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 自定义验证码输入框-->
+    <declare-styleable name="JellyBoxLayout">
+        <!--输入框的数量-->
+        <attr name="box_figures" format="integer" />
+        <!--输入类型-->
+        <attr name="box_input_type">
+            <enum name="number" value="0" />
+            <enum name="numberPassword" value="1" />
+            <enum name="text" value="2" />
+            <enum name="textPassword" value="3" />
+        </attr>
+        <!--输入框的宽度-->
+        <attr name="box_size" format="dimension|reference" />
+        <!--输入框文字颜色-->
+        <attr name="box_text_color" format="color|reference" />
+        <!--输入框文字大小-->
+        <attr name="box_text_size" format="dimension|reference" />
+        <!--输入框背景-->
+        <attr name="box_background" format="reference" />
+
+        <!--字体样式文件-->
+        <attr name="typeface_assets" format="string" />
+        <!--光标样式-->
+        <attr name="box_cursor_drawable" format="reference" />
+        <!--是否隐藏光标-->
+        <attr name="box_cursor_visible" format="boolean" />
+        <!--输入框间距，不输入则代表平分-->
+        <attr name="box_spacing" format="dimension|reference" />
+
+    </declare-styleable>
+</resources>

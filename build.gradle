@@ -1,0 +1,36 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    apply from: rootProject.file('dependencies.gradle')
+    repositories {
+        maven { url 'https://www.jitpack.io' }
+//        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+//        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath deps.gradle_plugins.build
+        classpath deps.gradle_plugins.kotlin_gradle
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.17"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://www.jitpack.io' }
+//        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+//        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+
+        google()
+        jcenter()
+
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
