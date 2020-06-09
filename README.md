@@ -53,8 +53,8 @@ attribute|instruction|value
 [typeface_assets](library/src/main/res/values/attrs.xml)|输入框内字体样式(从assets获取)|string
 [box_text_size](library/src/main/res/values/attrs.xml)|输入框内字体大小|dimension,reference
 [box_background](library/src/main/res/values/attrs.xml)|输入框背景设置|reference
-[box_cursor_drawable](/vcedittext-lib/src/main/res/values/attrs.xml)|输入框光标设置|reference
-[box_spacing](/vcedittext-lib/src/main/res/values/attrs.xml)|输入框间距设置|dimension,reference
+[box_cursor_drawable](library/src/main/res/values/attrs.xml)|输入框光标设置|reference
+[box_spacing](library/src/main/res/values/attrs.xml)|输入框间距设置|dimension,reference
 
 <BR>
 ## Usage
