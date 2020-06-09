@@ -18,13 +18,19 @@ def VERSION_NAME = '1.0.1'
 
 //BinTray configuration - credentials stored in user's gradle.properties
 bintray {
-    user = getBinTrayUser()
-    key = getBinTrayKey()
+//    user = getBinTrayUser()
+//    userOrg = getBinTrayUserOrg()
+//    key = getBinTrayKey()
+    user = getProperty('BINTRAY_USER')
+    userOrg = getProperty('USER_ORG')
+    key = getProperty('BINTRAY_KEY')
+
     publications = ['JellyBoxLayout']
 
     pkg {
         repo = 'android'
         name = ARTIFACT_ID
+        userOrg = userOrg
         desc = DESCRIPTION
         vcsUrl = GITHUB_URL + '.git'
         websiteUrl = GITHUB_URL
@@ -105,17 +111,16 @@ configurations {
 
 task showBintrayProps {
     doLast {
-        println "Bintray user/password: ${getBinTrayUser()}/${getBinTrayKey()}"
+        user = getProperty('BINTRAY_USER')
+        userOrg = getProperty('USER_ORG')
+        key = getProperty('BINTRAY_KEY')
+        println "Bintray user/password: ${user}/${key} on ${userOrg}"
     }
 }
 
-def final getBinTrayUser() {
-    final String BINTRAY_USER = "BINTRAY_USER"
-    return project.hasProperty(BINTRAY_USER) ? project.getProperty(BINTRAY_USER) : null
+
+def final getProperty(key) {
+    return project.hasProperty(key) ? project.getProperty(key) : null
 }
 
-def final getBinTrayKey() {
-    final String BINTRAY_KEY = "BINTRAY_KEY"
-    return project.hasProperty(BINTRAY_KEY) ? project.getProperty(BINTRAY_KEY) : null
-}
 
