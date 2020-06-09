@@ -18,19 +18,14 @@ def VERSION_NAME = '1.0.1'
 
 //BinTray configuration - credentials stored in user's gradle.properties
 bintray {
-//    user = getBinTrayUser()
-//    userOrg = getBinTrayUserOrg()
-//    key = getBinTrayKey()
     user = getProperty('BINTRAY_USER')
-    userOrg = getProperty('USER_ORG')
     key = getProperty('BINTRAY_KEY')
-
     publications = ['JellyBoxLayout']
 
     pkg {
         repo = 'android'
         name = ARTIFACT_ID
-        userOrg = userOrg
+        userOrg = getProperty('USER_ORG')
         desc = DESCRIPTION
         vcsUrl = GITHUB_URL + '.git'
         websiteUrl = GITHUB_URL
