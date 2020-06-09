@@ -40,7 +40,7 @@ repositories {
 Second. add to module build.gradle
 
 ```gradle
-implementation "com.justkiddingbaby:vercodeedittext:${latestVersion}"
+implementation "com.aboust.jelly:jellyboxlayout:${latestVersion}"
 ```
 
 ## Attributes instruction
