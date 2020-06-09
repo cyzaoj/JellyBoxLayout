@@ -19,6 +19,7 @@ import android.view.View.OnFocusChangeListener
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.core.view.marginBottom
 import androidx.core.view.marginEnd
@@ -46,7 +47,9 @@ class JellyBoxLayout : LinearLayout, TextWatcher, View.OnKeyListener, OnFocusCha
     /**
      * 输入框的宽度
      */
-    private var boxSize: Int = 120
+//    private var boxSize: Int = 120
+    private var boxHeight: Int = 120
+    private var boxWidth: Int = 120
 
     private var typeface: Typeface? = null
 
@@ -69,7 +72,8 @@ class JellyBoxLayout : LinearLayout, TextWatcher, View.OnKeyListener, OnFocusCha
     /**
      * 输入框背景
      */
-    private var boxBackground: Int = R.drawable.selector_edit_code
+    @DrawableRes
+    private var boxBackgroundDrawable: Int = R.drawable.selector_edit_code
 
     /**
      * 输入框间距
@@ -85,6 +89,7 @@ class JellyBoxLayout : LinearLayout, TextWatcher, View.OnKeyListener, OnFocusCha
     /**
      * 光标样式
      */
+    @DrawableRes
     private var cursorDrawable: Int = R.drawable.selector_edit_cursor
 
 
@@ -113,14 +118,16 @@ class JellyBoxLayout : LinearLayout, TextWatcher, View.OnKeyListener, OnFocusCha
 
     private fun initView(attrs: AttributeSet?) {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.JellyBoxLayout)
-        val type = typedArray.getInt(R.styleable.JellyBoxLayout_box_input_type, Types.NUMBER.ordinal)
+        val type =
+            typedArray.getInt(R.styleable.JellyBoxLayout_box_input_type, Types.NUMBER.ordinal)
         boxType = Types.values()[type]
         count = typedArray.getInteger(R.styleable.JellyBoxLayout_box_figures, 4)
-        boxSize = typedArray.getDimensionPixelSize(R.styleable.JellyBoxLayout_box_size, 120)
+        boxHeight = typedArray.getDimensionPixelSize(R.styleable.JellyBoxLayout_box_height, 120)
+        boxWidth = typedArray.getDimensionPixelSize(R.styleable.JellyBoxLayout_box_width, 120)
         textColor = typedArray.getColor(R.styleable.JellyBoxLayout_box_text_color, Color.BLACK)
         textSize =
             typedArray.getDimensionPixelSize(R.styleable.JellyBoxLayout_box_text_size, 16).toFloat()
-        boxBackground = typedArray.getResourceId(
+        boxBackgroundDrawable = typedArray.getResourceId(
             R.styleable.JellyBoxLayout_box_background,
             R.drawable.selector_edit_code
         )
@@ -131,9 +138,8 @@ class JellyBoxLayout : LinearLayout, TextWatcher, View.OnKeyListener, OnFocusCha
         cursorVisible = typedArray.getBoolean(R.styleable.JellyBoxLayout_box_cursor_visible, true)
         boxMargin = typedArray.getDimension(R.styleable.JellyBoxLayout_box_spacing, 0F)
         val typefaceId = typedArray.getString(R.styleable.JellyBoxLayout_typeface_assets)
-        if (null != typefaceId) typeface =
-            Typeface.createFromAsset(this.resources.assets, typefaceId)
-//        orientation = HORIZONTAL
+        if (null != typefaceId)
+            typeface = Typeface.createFromAsset(this.resources.assets, typefaceId)
         addBox()
 
         //释放资源
@@ -160,6 +166,7 @@ class JellyBoxLayout : LinearLayout, TextWatcher, View.OnKeyListener, OnFocusCha
         editText.isCursorVisible = false
         editText.maxEms = 1
         editText.setTextColor(textColor)
+        editText.typeface = typeface
         editText.textSize = textSize
         editText.isCursorVisible = cursorVisible
         editText.maxLines = 1
@@ -177,7 +184,7 @@ class JellyBoxLayout : LinearLayout, TextWatcher, View.OnKeyListener, OnFocusCha
         }
         editText.setPadding(0, 0, 0, 0)
         editText.setOnKeyListener(this)
-        editText.setBackgroundResource(boxBackground)
+        editText.setBackgroundResource(boxBackgroundDrawable)
         editTextCursorDrawable(editText)
         editText.addTextChangedListener(this)
         editText.setOnKeyListener(this)
@@ -190,40 +197,46 @@ class JellyBoxLayout : LinearLayout, TextWatcher, View.OnKeyListener, OnFocusCha
      * 当boxMargin 为空的时候默认取boxSize的 1/4大小
      */
     private fun getLayoutParams(index: Int): LayoutParams {
-        val layoutParams = LayoutParams(boxSize, boxSize)
-        val margin = if (0F == this.boxMargin) boxSize / 4 else this.boxMargin.toInt()
+        val layoutParams = LayoutParams(boxWidth, boxHeight)
         if (0 != index) when (orientation) {
-            HORIZONTAL -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                layoutParams.marginStart = margin
-            } else {
-                layoutParams.leftMargin = margin
+            HORIZONTAL -> {
+                val margin = if (0F == this.boxMargin) boxWidth / 4 else this.boxMargin.toInt()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    layoutParams.marginStart = margin
+                } else {
+                    layoutParams.leftMargin = margin
+                }
             }
-            VERTICAL -> layoutParams.topMargin = margin
+            VERTICAL -> {
+                val margin = if (0F == this.boxMargin) boxHeight / 4 else this.boxMargin.toInt()
+                layoutParams.topMargin = margin
+            }
         }
         layoutParams.gravity = Gravity.CENTER
         return layoutParams
     }
 
     private fun editTextCursorDrawable(editText: EditText?) {
+        if (!cursorVisible) return
+
         //修改光标的颜色（反射）
-        if (cursorVisible) {
-            try {
-                val f = TextView::class.java.getDeclaredField("mCursorDrawableRes")
-                f.isAccessible = true
-                f[editText] = cursorDrawable
-            } catch (ignored: Exception) {
-                Log.e(
-                    this.javaClass.simpleName,
-                    String.format(
-                        "mCursorDrawableRes put value failure,cause: %s",
-                        ignored.javaClass.name
-                    )
+        try {
+            val f = TextView::class.java.getDeclaredField("mCursorDrawableRes")
+            f.isAccessible = true
+            f[editText] = cursorDrawable
+        } catch (ignored: Exception) {
+            Log.e(
+                this.javaClass.simpleName,
+                String.format(
+                    "mCursorDrawableRes put value failure,cause: %s",
+                    ignored.javaClass.name
                 )
-            }
+            )
         }
+
     }
 
-    private fun updateBoxMargin() {
+    private fun boxMargin() {
         for (index in 0 until count) {
             val editText = getChildAt(index) as EditText
             editText.layoutParams = getLayoutParams(index)
@@ -239,7 +252,7 @@ class JellyBoxLayout : LinearLayout, TextWatcher, View.OnKeyListener, OnFocusCha
      */
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        updateBoxMargin()
+        boxMargin()
         setMeasuredDimension(measureWidth(widthMeasureSpec), measureHeight(heightMeasureSpec))
     }
 

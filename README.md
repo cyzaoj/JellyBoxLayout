@@ -10,8 +10,8 @@
 
 <BR>
 ##DEMO
+<img src="./screenshot/device-2020-06-09-102655.png" width="324" height="673.2" align="middle" />
 
-![效果预览图](./screenshot/device-2020-06-09-102655.png)
 <BR>
 <BR>
 
@@ -48,7 +48,8 @@ attribute|instruction|value
 ---|---|---
 [box_figures](library/src/main/res/values/attrs.xml)|输入框个数|integer
 [box_input_type](library/src/main/res/values/attrs.xml)|number, numberPassword, text ,textPassword|enum
-[box_size](library/src/main/res/values/attrs.xml)|输入框宽高设置(目前为正方形)|dimension,reference
+[box_width](library/src/main/res/values/attrs.xml)|输入框宽度设置|dimension,reference
+[box_height](library/src/main/res/values/attrs.xml)|输入框高度设置|dimension,reference
 [box_text_color](library/src/main/res/values/attrs.xml)|输入框字体颜色|color,reference
 [typeface_assets](library/src/main/res/values/attrs.xml)|输入框内字体样式(从assets获取)|string
 [box_text_size](library/src/main/res/values/attrs.xml)|输入框内字体大小|dimension,reference
@@ -64,14 +65,19 @@ use in the layout
 
 ``` xml
 
-    <com.aboust.jellybox.JellyBoxLayout
-        app:box_figures="4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+     <com.aboust.jellybox.JellyBoxLayout
+            android:id="@+id/jelly_box_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:box_background="@color/colorAccent"
+            app:box_figures="4"
+            app:box_height="40dp"
+            app:box_input_type="textPassword"
+            app:box_spacing="10dp"
+            app:box_text_color="@android:color/white"
+            app:box_text_size="12sp"
+            app:box_width="40dp"
+            app:typeface_assets="CG_Omega_Bold_Italic.ttf" />
         
 ```
 

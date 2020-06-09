@@ -12,8 +12,8 @@ final String GITHUB_URL = "https://github.com/cyzaoj/JellyBoxLayout"
 final String GROUP_ID = "com.aboust.jelly"
 final String ARTIFACT_ID = "jellyboxlayout"
 
-def VERSION_CODE = 1
-def VERSION_NAME = '1.0.0'
+def VERSION_CODE = 2
+def VERSION_NAME = '1.0.1'
 
 
 //BinTray configuration - credentials stored in user's gradle.properties
@@ -25,7 +25,6 @@ bintray {
     pkg {
         repo = 'android'
         name = ARTIFACT_ID
-        userOrg = 'aboust'
         desc = DESCRIPTION
         vcsUrl = GITHUB_URL + '.git'
         websiteUrl = GITHUB_URL
